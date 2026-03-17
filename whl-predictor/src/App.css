@@ -1,5 +1,65 @@
+
 .App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
   text-align: center;
+  background: #f8f8fc;
+}
+
+.bracket-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bracket-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.champion-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 32px auto;
+  padding: 18px 24px;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.07);
+  background: #fffbe6;
+  border: 2px solid #c99600cc;
+}
+
+.champion-box-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #c99600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.champion-box-team {
+  font-size: 20px;
+  font-weight: 900;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+.champion-box-games {
+  font-size: 13px;
+  color: #c99600;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 4px;
 }
 
 .App-logo {
