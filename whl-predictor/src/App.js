@@ -106,35 +106,36 @@ function MatchupCard({ top, bot, result, onResult, acc }) {
   const winner = result?.winner;
   const games = result?.games;
   return (
-    <div style={{ border: "1px solid var(--color-border-tertiary)", borderRadius: 7, overflow: "hidden", background: "var(--color-background-primary)", width: "100%" }}>
+    <div style={{ border: "1px solid var(--color-border-tertiary)", borderRadius: 7, overflow: "hidden", background: "var(--color-background-primary)", width: "100%", textAlign: "center" }}>
       {[top, bot].map((team, idx) => {
         const isWin = winner?.id === team?.id;
         const isLose = winner && team && winner.id !== team.id;
         return (
           <div key={idx} onClick={() => team && onResult({ winner: team, games: games || null })}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 8px", cursor: team ? "pointer" : "default", background: isWin ? `${acc}14` : "transparent", borderBottom: idx === 0 ? "1px solid var(--color-border-tertiary)" : "none", opacity: isLose ? 0.38 : 1, minHeight: 34, transition: "background 0.1s" }}>
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "6px 8px", cursor: team ? "pointer" : "default", background: isWin ? `${acc}14` : "transparent", borderBottom: idx === 0 ? "1px solid var(--color-border-tertiary)" : "none", opacity: isLose ? 0.38 : 1, minHeight: 34, transition: "background 0.1s", textAlign: "center", width: "100%" }}>
             {!team ? <div style={{ height: 18, flex: 1, borderRadius: 3, background: "var(--color-background-tertiary)", opacity: 0.4 }} /> : (
               <>
-                <span style={{ fontSize: 10, color: "var(--color-text-tertiary)", fontWeight: 700, minWidth: 16 }}>#{team.seed}</span>
+                <span style={{ fontSize: 10, color: "var(--color-text-tertiary)", fontWeight: 700, minWidth: 16, textAlign: "center" }}>#{team.seed}</span>
                 <Logo id={team.id} size={20} />
-                <span style={{ fontSize: 12, fontWeight: isWin ? 700 : 400, color: isWin ? "var(--color-text-primary)" : "var(--color-text-secondary)", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{team.name}</span>
+                <span style={{ fontSize: 12, fontWeight: isWin ? 700 : 400, color: isWin ? "var(--color-text-primary)" : "var(--color-text-secondary)", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" }}>{team.name}</span>
                 {isWin && <div style={{ width: 5, height: 5, borderRadius: "50%", background: acc, flexShrink: 0 }} />}
+                {result?.games && winner?.id === team?.id && (
+                  <span style={{ fontSize: 10, color: acc, fontWeight: 700, marginLeft: 6, textAlign: "center" }}>({result.games} games)</span>
+                )}
               </>
             )}
           </div>
         );
       })}
-      {winner && (
-        <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 8px", background: "var(--color-background-secondary)", borderTop: "1px solid var(--color-border-tertiary)" }}>
-          <span style={{ fontSize: 10, color: "var(--color-text-tertiary)" }}>Games:</span>
-          {[4, 5, 6, 7].map((g) => (
-            <button key={g} onClick={() => onResult({ winner, games: g })}
-              style={{ padding: "1px 6px", fontSize: 10, borderRadius: 3, border: games === g ? `1.5px solid ${acc}` : "1px solid var(--color-border-tertiary)", background: games === g ? `${acc}15` : "transparent", color: games === g ? "var(--color-text-primary)" : "var(--color-text-secondary)", cursor: "pointer", fontWeight: games === g ? 700 : 400 }}>
-              {g}
-            </button>
-          ))}
-        </div>
-      )}
+      <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 8px", background: "var(--color-background-secondary)", borderTop: "1px solid var(--color-border-tertiary)", justifyContent: "center", textAlign: "center" }}>
+        <span style={{ fontSize: 10, color: "var(--color-text-tertiary)", textAlign: "center" }}>Games:</span>
+        {[4, 5, 6, 7].map((g) => (
+          <button key={g} onClick={() => winner && onResult({ winner, games: g })}
+            style={{ padding: "1px 6px", fontSize: 10, borderRadius: 3, border: games === g ? `1.5px solid ${acc}` : "1px solid var(--color-border-tertiary)", background: games === g ? `${acc}15` : "transparent", color: games === g ? "var(--color-text-primary)" : "var(--color-text-secondary)", cursor: winner ? "pointer" : "not-allowed", fontWeight: games === g ? 700 : 400, textAlign: "center" }}>
+            {g}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -196,7 +197,7 @@ function CenterChampionship({ eastChamp, westChamp, result, onResult }) {
   const winner = result?.winner;
   const games = result?.games;
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: 164, maxWidth: 190, padding: "0 6px" }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: 164, maxWidth: 190, padding: "0 6px", textAlign: "center" }}>
       <div style={{ textAlign: "center", marginBottom: 8 }}>
         <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase", color: GOLD, fontFamily: "'Barlow Condensed',sans-serif" }}>WHL Championship</div>
         <div style={{ fontSize: 8, color: "var(--color-text-tertiary)", marginTop: 1 }}>Ed Chynoweth Cup</div>
@@ -205,33 +206,31 @@ function CenterChampionship({ eastChamp, westChamp, result, onResult }) {
         const isWin = winner?.id === team?.id;
         const isLose = winner && team && winner.id !== team.id;
         return (
-          <div key={lbl}>
+          <div key={lbl} style={{ width: "100%", textAlign: "center" }}>
             <div onClick={() => team && onResult({ winner: team, games: games || null })}
-              style={{ width: "100%", display: "flex", alignItems: "center", gap: 6, padding: "7px 9px", borderRadius: 7, border: isWin ? `2px solid ${GOLD}` : "1px solid var(--color-border-tertiary)", background: isWin ? `${GOLD}12` : "var(--color-background-primary)", cursor: team ? "pointer" : "default", opacity: isLose ? 0.35 : 1, transition: "all 0.12s", marginBottom: idx === 0 ? 0 : 0 }}>
-              {team ? (<><Logo id={team.id} size={26} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 9, color: "var(--color-text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>{lbl}</div><div style={{ fontSize: 11, fontWeight: isWin ? 700 : 500, color: "var(--color-text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{team.name}</div></div>{isWin && <span style={{ fontSize: 14 }}>🏆</span>}</>) : (<span style={{ fontSize: 10, color: "var(--color-text-tertiary)", fontStyle: "italic" }}>{lbl} TBD</span>)}
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "7px 9px", borderRadius: 7, border: isWin ? `2px solid ${GOLD}` : "1px solid var(--color-border-tertiary)", background: isWin ? `${GOLD}12` : "var(--color-background-primary)", cursor: team ? "pointer" : "default", opacity: isLose ? 0.35 : 1, transition: "all 0.12s", marginBottom: idx === 0 ? 0 : 0, textAlign: "center" }}>
+              {team ? (<><Logo id={team.id} size={26} /><div style={{ flex: 1, minWidth: 0, textAlign: "center" }}><div style={{ fontSize: 9, color: "var(--color-text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>{lbl}</div><div style={{ fontSize: 11, fontWeight: isWin ? 700 : 500, color: "var(--color-text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" }}>{team.name}</div></div>{isWin && <span style={{ fontSize: 14 }}>🏆</span>}{result?.games && winner?.id === team?.id && (<span style={{ fontSize: 10, color: GOLD, fontWeight: 700, marginLeft: 6, textAlign: "center" }}>({result.games} games)</span>)}</>) : (<span style={{ fontSize: 10, color: "var(--color-text-tertiary)", fontStyle: "italic" }}>{lbl} TBD</span>)}
             </div>
             {idx === 0 && <div style={{ textAlign: "center", fontSize: 18, padding: "4px 0", color: GOLD }}>🏆</div>}
           </div>
         );
       })}
+      <div style={{ marginTop: 6, display: "flex", gap: 3, flexWrap: "wrap", justifyContent: "center", textAlign: "center" }}>
+        {[4, 5, 6, 7].map((g) => (
+          <button key={g} onClick={() => winner && onResult({ winner, games: g })}
+            style={{ padding: "2px 7px", fontSize: 10, borderRadius: 4, border: games === g ? `1.5px solid ${GOLD}` : "1px solid var(--color-border-tertiary)", background: games === g ? `${GOLD}20` : "transparent", color: games === g ? GOLD : "var(--color-text-secondary)", cursor: winner ? "pointer" : "not-allowed", fontWeight: games === g ? 700 : 400, textAlign: "center" }}>
+            {g}
+          </button>
+        ))}
+      </div>
       {winner && (
-        <div style={{ marginTop: 6, display: "flex", gap: 3, flexWrap: "wrap", justifyContent: "center" }}>
-          {[4, 5, 6, 7].map((g) => (
-            <button key={g} onClick={() => onResult({ winner, games: g })}
-              style={{ padding: "2px 7px", fontSize: 10, borderRadius: 4, border: games === g ? `1.5px solid ${GOLD}` : "1px solid var(--color-border-tertiary)", background: games === g ? `${GOLD}20` : "transparent", color: games === g ? GOLD : "var(--color-text-secondary)", cursor: "pointer", fontWeight: games === g ? 700 : 400 }}>
-              {g}
-            </button>
-          ))}
-        </div>
-      )}
-      {winner && (
-        <div style={{ marginTop: 8, textAlign: "center", padding: "8px 10px", borderRadius: 8, background: `${GOLD}12`, border: `1px solid ${GOLD}40`, width: "100%" }}>
-          <div style={{ fontSize: 9, color: GOLD, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>Champion</div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, marginTop: 4 }}>
+        <div style={{ marginTop: 8, textAlign: "center", padding: "8px 10px", borderRadius: 8, background: `${GOLD}12`, border: `1px solid ${GOLD}40`, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ fontSize: 9, color: GOLD, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", textAlign: "center" }}>Champion</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, marginTop: 4, textAlign: "center" }}>
             <Logo id={winner.id} size={24} />
-            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "'Barlow Condensed',sans-serif" }}>{winner.name}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "'Barlow Condensed',sans-serif", textAlign: "center" }}>{winner.name}</span>
           </div>
-          {games && <div style={{ fontSize: 9, color: "var(--color-text-tertiary)", marginTop: 2 }}>in {games} games</div>}
+          {games && <div style={{ fontSize: 9, color: "var(--color-text-tertiary)", marginTop: 2, textAlign: "center" }}>in {games} games</div>}
         </div>
       )}
     </div>
@@ -244,18 +243,20 @@ function FinalMatchupCard({ top, bot, result, acc }) {
   const winner = result?.winner;
   const games = result?.games;
   return (
-    <div style={{ border: `1px solid ${acc}50`, borderRadius: 6, overflow: "hidden", background: "#fff" }}>
+    <div style={{ border: `1px solid ${acc}50`, borderRadius: 6, overflow: "hidden", background: "#fff", textAlign: "center" }}>
       {[top, bot].map((team, idx) => {
         const isWin = winner?.id === team?.id;
         const isLose = winner && team && winner.id !== team.id;
         return (
-          <div key={idx} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 7px", background: isWin ? `${acc}15` : "transparent", borderBottom: idx === 0 ? `1px solid ${acc}30` : "none", opacity: isLose ? 0.3 : 1, minHeight: 28 }}>
+          <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "5px 7px", background: isWin ? `${acc}15` : "transparent", borderBottom: idx === 0 ? `1px solid ${acc}30` : "none", opacity: isLose ? 0.3 : 1, minHeight: 28, textAlign: "center", width: "100%" }}>
             {!team ? <div style={{ height: 14, flex: 1, borderRadius: 2, background: "#f7f7fa" }} /> : (
               <>
-                <span style={{ fontSize: 9, color: isWin ? "#fff" : isLose ? "#000" : "#bbb", fontWeight: 700, minWidth: 12, background: isWin ? acc : "none", borderRadius: 3, padding: isWin ? "0 4px" : 0 }}>#{team.seed}</span>
+                <span style={{ fontSize: 9, color: isWin ? "#fff" : isLose ? "#000" : "#bbb", fontWeight: 700, minWidth: 12, background: isWin ? acc : "none", borderRadius: 3, padding: isWin ? "0 4px" : 0, textAlign: "center" }}>#{team.seed}</span>
                 <Logo id={team.id} size={17} />
-                <span style={{ fontSize: 11, fontWeight: isWin ? 700 : 400, color: isWin ? "#1a1a1a" : isLose ? "#000" : "#888", flex: 1, whiteSpace: "normal" }}>{team.name}</span>
-                {games && <span style={{ fontSize: 9, color: acc, fontWeight: 700, flexShrink: 0, marginLeft: 4 }}>{games} Games</span>}
+                <span style={{ fontSize: 11, fontWeight: isWin ? 700 : 400, color: isWin ? "#1a1a1a" : isLose ? "#000" : "#888", flex: 1, whiteSpace: "normal", textAlign: "center" }}>{team.name}</span>
+                {result?.games && winner?.id === team?.id && (
+                  <span style={{ fontSize: 9, color: acc, fontWeight: 700, flexShrink: 0, marginLeft: 4, textAlign: "center" }}>({result.games} games)</span>
+                )}
               </>
             )}
           </div>
@@ -305,7 +306,7 @@ function FinalBracketView({ westSeeds, eastSeeds, bracketState }) {
   const champGames = bracketState.finals?.games || null;
 
   return (
-    <div style={{ background: "#fff", color: "#222", padding: "24px 20px 20px", borderRadius: 14, fontFamily: "'Barlow Condensed',sans-serif", boxShadow: "0 2px 12px 0 rgba(0,0,0,0.07)" }}>
+    <div style={{ background: "#fff", color: "#222", padding: "24px 20px 20px", borderRadius: 14, fontFamily: "'Barlow Condensed',sans-serif", boxShadow: "0 2px 12px 0 rgba(0,0,0,0.07)", textAlign: "center" }}>
       {/* header */}
       <div style={{ textAlign: "center", marginBottom: 20 }}>
         <div style={{ fontSize: 30, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1a1a1a" }}>WHL PLAYOFF PREDICTIONS</div>
@@ -337,11 +338,11 @@ function FinalBracketView({ westSeeds, eastSeeds, bracketState }) {
           })}
 
           {champ && (
-            <div style={{ marginTop: 22, textAlign: "center", padding: "18px 18px", borderRadius: 14, background: `${GOLD}14`, border: `2px solid ${GOLD}80`, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+            <div style={{ marginTop: 22, textAlign: "center", padding: "18px 18px", borderRadius: 14, background: `${GOLD}14`, border: `2px solid ${GOLD}80`, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
               <div style={{ fontSize: 12, color: GOLD, fontWeight: 900, letterSpacing: "0.13em", textTransform: "uppercase", textAlign: "center" }}>🏆 WHL Champion</div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 8, textAlign: "center" }}>
                 <Logo id={champ.id} size={44} />
-                <div>
+                <div style={{ textAlign: "center" }}>
                   <div style={{ fontSize: 18, fontWeight: 900, color: "#1a1a1a", textAlign: "center" }}>{champ.name}</div>
                   {champGames && <div style={{ fontSize: 12, color: GOLD, textAlign: "center", fontWeight: 700 }}>in {champGames} Games</div>}
                 </div>
