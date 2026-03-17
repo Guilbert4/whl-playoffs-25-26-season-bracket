@@ -255,7 +255,7 @@ function FinalMatchupCard({ top, bot, result, acc }) {
                 <span style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", fontWeight: 700, minWidth: 12 }}>#{team.seed}</span>
                 <Logo id={team.id} size={17} />
                 <span style={{ fontSize: 11, fontWeight: isWin ? 700 : 400, color: isWin ? "#fff" : "rgba(255,255,255,0.65)", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{team.name}</span>
-                {isWin && games && <span style={{ fontSize: 9, color: acc === WEST_CLR ? "#e88080" : "#80a0e8", fontWeight: 700, flexShrink: 0 }}>{games} Game{games > 1 ? 's' : ''}</span>}
+                {isWin && games && <span style={{ fontSize: 9, color: acc === WEST_CLR ? "#e88080" : "#80a0e8", fontWeight: 700, flexShrink: 0 }}>{games} Games</span>}
               </>
             )}
           </div>
@@ -343,7 +343,7 @@ function FinalBracketView({ westSeeds, eastSeeds, bracketState }) {
                 <Logo id={champ.id} size={36} />
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a" }}>{champ.name}</div>
-                  {champGames && <div style={{ fontSize: 10, color: "#888" }}>in {champGames} games</div>}
+                  {champGames && <div style={{ fontSize: 10, color: "#888" }}>in {champGames} Games</div>}
                 </div>
               </div>
             </div>
