@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/whl-playoffs-25-26-season-bracket/static/css/main.e6c13ad2.css",
-    "main.js": "/whl-playoffs-25-26-season-bracket/static/js/main.c7691833.js",
+    "main.js": "/whl-playoffs-25-26-season-bracket/static/js/main.a3fbc6ee.js",
     "static/js/453.5ea2c07c.chunk.js": "/whl-playoffs-25-26-season-bracket/static/js/453.5ea2c07c.chunk.js",
     "index.html": "/whl-playoffs-25-26-season-bracket/index.html",
     "main.e6c13ad2.css.map": "/whl-playoffs-25-26-season-bracket/static/css/main.e6c13ad2.css.map",
-    "main.c7691833.js.map": "/whl-playoffs-25-26-season-bracket/static/js/main.c7691833.js.map",
+    "main.a3fbc6ee.js.map": "/whl-playoffs-25-26-season-bracket/static/js/main.a3fbc6ee.js.map",
     "453.5ea2c07c.chunk.js.map": "/whl-playoffs-25-26-season-bracket/static/js/453.5ea2c07c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.c7691833.js"
+    "static/js/main.a3fbc6ee.js"
   ]
 }
