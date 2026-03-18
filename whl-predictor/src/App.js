@@ -120,7 +120,20 @@ function MatchupCard({ top, bot, result, onResult, acc }) {
                 <span style={{ fontSize: 12, fontWeight: isWin ? 700 : 400, color: isWin ? "var(--color-text-primary)" : "var(--color-text-secondary)", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" }}>{team.name}</span>
                 {isWin && <div style={{ width: 5, height: 5, borderRadius: "50%", background: acc, flexShrink: 0 }} />}
                 {result?.games && winner?.id === team?.id && (
-                  <span style={{ fontSize: 10, color: acc, fontWeight: 700, marginLeft: 6, textAlign: "center" }}>({result.games} games)</span>
+                  <span style={{
+                    fontSize: 10,
+                    color: acc,
+                    fontWeight: 700,
+                    marginLeft: 6,
+                    textAlign: "center",
+                    display: "inline-block",
+                    background: "#f6f6f6",
+                    borderRadius: 4,
+                    padding: "1px 7px",
+                    minWidth: 0,
+                    width: "auto",
+                    whiteSpace: "nowrap"
+                  }}>({result.games} games)</span>
                 )}
               </>
             )}
@@ -209,7 +222,20 @@ function CenterChampionship({ eastChamp, westChamp, result, onResult }) {
           <div key={lbl} style={{ width: "100%", textAlign: "center" }}>
             <div onClick={() => team && onResult({ winner: team, games: games || null })}
               style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "7px 9px", borderRadius: 7, border: isWin ? `2px solid ${GOLD}` : "1px solid var(--color-border-tertiary)", background: isWin ? `${GOLD}12` : "var(--color-background-primary)", cursor: team ? "pointer" : "default", opacity: isLose ? 0.35 : 1, transition: "all 0.12s", marginBottom: idx === 0 ? 0 : 0, textAlign: "center" }}>
-              {team ? (<><Logo id={team.id} size={26} /><div style={{ flex: 1, minWidth: 0, textAlign: "center" }}><div style={{ fontSize: 9, color: "var(--color-text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>{lbl}</div><div style={{ fontSize: 11, fontWeight: isWin ? 700 : 500, color: "var(--color-text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" }}>{team.name}</div></div>{isWin && <span style={{ fontSize: 14 }}>🏆</span>}{result?.games && winner?.id === team?.id && (<span style={{ fontSize: 10, color: GOLD, fontWeight: 700, marginLeft: 6, textAlign: "center" }}>({result.games} games)</span>)}</>) : (<span style={{ fontSize: 10, color: "var(--color-text-tertiary)", fontStyle: "italic" }}>{lbl} TBD</span>)}
+              {team ? (<><Logo id={team.id} size={26} /><div style={{ flex: 1, minWidth: 0, textAlign: "center" }}><div style={{ fontSize: 9, color: "var(--color-text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>{lbl}</div><div style={{ fontSize: 11, fontWeight: isWin ? 700 : 500, color: "var(--color-text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" }}>{team.name}</div></div>{isWin && <span style={{ fontSize: 14 }}>🏆</span>}{result?.games && winner?.id === team?.id && (<span style={{
+                fontSize: 10,
+                color: GOLD,
+                fontWeight: 700,
+                marginLeft: 6,
+                textAlign: "center",
+                display: "inline-block",
+                background: "#f6f6f6",
+                borderRadius: 4,
+                padding: "1px 7px",
+                minWidth: 0,
+                width: "auto",
+                whiteSpace: "nowrap"
+              }}>({result.games} games)</span>)}</>) : (<span style={{ fontSize: 10, color: "var(--color-text-tertiary)", fontStyle: "italic" }}>{lbl} TBD</span>)}
             </div>
             {idx === 0 && <div style={{ textAlign: "center", fontSize: 18, padding: "4px 0", color: GOLD }}>🏆</div>}
           </div>
@@ -255,7 +281,20 @@ function FinalMatchupCard({ top, bot, result, acc }) {
                 <Logo id={team.id} size={17} />
                 <span style={{ fontSize: 11, fontWeight: isWin ? 700 : 400, color: isWin ? "#1a1a1a" : isLose ? "#000" : "#888", flex: 1, whiteSpace: "normal", textAlign: "center" }}>{team.name}</span>
                 {result?.games && winner?.id === team?.id && (
-                  <span style={{ fontSize: 9, color: acc, fontWeight: 700, flexShrink: 0, marginLeft: 4, textAlign: "center" }}>({result.games} games)</span>
+                  <span style={{
+                    fontSize: 9,
+                    color: acc,
+                    fontWeight: 700,
+                    marginLeft: 4,
+                    textAlign: "center",
+                    display: "inline-block",
+                    background: "#f6f6f6",
+                    borderRadius: 4,
+                    padding: "1px 7px",
+                    minWidth: 0,
+                    width: "auto",
+                    whiteSpace: "nowrap"
+                  }}>({result.games} games)</span>
                 )}
               </>
             )}
