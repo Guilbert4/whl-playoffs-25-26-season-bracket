@@ -265,7 +265,7 @@ function CenterChampionship({ eastChamp, westChamp, result, onResult }) {
 
 // ── page 3: final bracket (dark, export-ready) ────────────────────────────────
 
-function FinalMatchupCard({ top, bot, result, acc }) {
+function FinalMatchupCard({ top, bot, result, acc, boxWidth }) {
   const winner = result?.winner;
   const games = result?.games;
   return (
