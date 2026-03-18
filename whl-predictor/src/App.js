@@ -269,32 +269,19 @@ function FinalMatchupCard({ top, bot, result, acc }) {
   const winner = result?.winner;
   const games = result?.games;
   return (
-    <div style={{ border: `1px solid ${acc}50`, borderRadius: 6, overflow: "hidden", background: "#fff", textAlign: "center" }}>
+    <div style={{ border: `1.5px solid ${acc}30`, borderRadius: 10, background: "#fff", marginBottom: 7, boxShadow: "0 1px 4px 0 rgba(0,0,0,0.03)", minWidth: boxWidth ? boxWidth : 180 }}>
       {[top, bot].map((team, idx) => {
         const isWin = winner?.id === team?.id;
         const isLose = winner && team && winner.id !== team.id;
         return (
-          <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "5px 7px", background: isWin ? `${acc}15` : "transparent", borderBottom: idx === 0 ? `1px solid ${acc}30` : "none", opacity: isLose ? 0.3 : 1, minHeight: 28, textAlign: "center", width: "100%" }}>
-            {!team ? <div style={{ height: 14, flex: 1, borderRadius: 2, background: "#f7f7fa" }} /> : (
+          <div key={idx} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", background: isWin ? `${acc}10` : "#fff", borderBottom: idx === 0 ? `1px solid ${acc}10` : "none", opacity: isLose ? 0.45 : 1, minHeight: 32, textAlign: "left", borderRadius: idx === 0 ? "10px 10px 0 0" : "0 0 10px 10px" }}>
+            {!team ? <div style={{ height: 16, flex: 1, borderRadius: 2, background: "#f7f7fa" }} /> : (
               <>
-                <span style={{ fontSize: 9, color: isWin ? "#fff" : isLose ? "#000" : "#bbb", fontWeight: 700, minWidth: 12, background: isWin ? acc : "none", borderRadius: 3, padding: isWin ? "0 4px" : 0, textAlign: "center" }}>#{team.seed}</span>
-                <Logo id={team.id} size={17} />
-                <span style={{ fontSize: 11, fontWeight: isWin ? 700 : 400, color: isWin ? "#1a1a1a" : isLose ? "#000" : "#888", flex: 1, whiteSpace: "normal", textAlign: "center" }}>{team.name}</span>
-                {result?.games && winner?.id === team?.id && (
-                  <span style={{
-                    fontSize: 9,
-                    color: acc,
-                    fontWeight: 700,
-                    marginLeft: 4,
-                    textAlign: "center",
-                    display: "inline-block",
-                    background: "#f6f6f6",
-                    borderRadius: 4,
-                    padding: "1px 7px",
-                    minWidth: 0,
-                    width: "auto",
-                    whiteSpace: "nowrap"
-                  }}>({result.games} games)</span>
+                <span style={{ fontSize: 11, fontWeight: 900, color: "#fff", background: acc, borderRadius: 8, padding: "2px 8px", marginRight: 8, minWidth: 28, display: "inline-block", textAlign: "center", letterSpacing: "0.03em" }}>#{team.seed}</span>
+                <Logo id={team.id} size={18} />
+                <span style={{ fontSize: 13, fontWeight: 800, color: isWin ? acc : "#222", marginLeft: 8, flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "left", fontFamily: "'Barlow Condensed',sans-serif" }}>{team.name}</span>
+                {isWin && result?.games && (
+                  <span style={{ fontSize: 13, fontWeight: 700, color: acc, marginLeft: 10, letterSpacing: "0.01em" }}>{result.games} <span style={{ fontWeight: 400, fontSize: 11, color: acc }}>Games</span></span>
                 )}
               </>
             )}
@@ -319,20 +306,38 @@ function FinalConferenceSide({ label, acc, r1res, r2res, r3res, seeds, mirrored 
   ];
   const ordered = mirrored ? [...rounds].reverse() : rounds;
 
+  // Calculate max width for each round's team names
+  const getMaxWidth = (matchups) => {
+    let max = 0;
+    matchups.forEach(({ top, bot }) => {
+      [top, bot].forEach((team) => {
+        if (team && team.name) {
+          const len = team.name.length;
+          if (len > max) max = len;
+        }
+      });
+    });
+    // Estimate width: 8px per char + 60px for seed/logo/padding
+    return max > 0 ? max * 8 + 60 : 120;
+  };
+
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={{ textAlign: mirrored ? "right" : "left", marginBottom: 8, paddingBottom: 5, borderBottom: `2px solid ${acc}` }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: acc, letterSpacing: "0.05em", textTransform: "uppercase" }}>{label}</span>
+      <div style={{ textAlign: mirrored ? "right" : "left", marginBottom: 12, paddingBottom: 6, borderBottom: `3px solid ${acc}` }}>
+        <span style={{ fontSize: 16, fontWeight: 900, color: acc, letterSpacing: "0.09em", textTransform: "uppercase", fontFamily: "'Barlow Condensed',sans-serif" }}>{label}</span>
       </div>
-      <div style={{ display: "flex", gap: 4 }}>
-        {ordered.map((round) => (
-          <div key={round.key} style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-            <div style={{ textAlign: "center", fontSize: 8, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: acc, marginBottom: 5, paddingBottom: 2, borderBottom: `1px solid ${acc}35` }}>{round.label}</div>
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-around", flex: 1, gap: 5, minHeight: 260 }}>
-              {round.matchups.map((m, i) => <FinalMatchupCard key={i} top={m.top} bot={m.bot} result={round.results[i]} acc={acc} />)}
+      <div style={{ display: "flex", gap: 8 }}>
+        {ordered.map((round, roundIdx) => {
+          const boxWidth = getMaxWidth(round.matchups);
+          return (
+            <div key={round.key} style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+              <div style={{ textAlign: "center", fontSize: 12, fontWeight: 800, letterSpacing: "0.11em", textTransform: "uppercase", color: acc, marginBottom: 10, paddingBottom: 4, borderBottom: `2px solid ${acc}30`, fontFamily: "'Barlow Condensed',sans-serif" }}>{round.label}</div>
+              <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-around", flex: 1, gap: 8, minHeight: 260 }}>
+                {round.matchups.map((m, i) => <FinalMatchupCard key={i} top={m.top} bot={m.bot} result={round.results[i]} acc={acc} boxWidth={boxWidth} />)}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -348,8 +353,8 @@ function FinalBracketView({ westSeeds, eastSeeds, bracketState }) {
     <div style={{ background: "#fff", color: "#222", padding: "24px 20px 20px", borderRadius: 14, fontFamily: "'Barlow Condensed',sans-serif", boxShadow: "0 2px 12px 0 rgba(0,0,0,0.07)", textAlign: "center" }}>
       {/* header */}
       <div style={{ textAlign: "center", marginBottom: 20 }}>
-        <div style={{ fontSize: 30, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1a1a1a" }}>WHL PLAYOFF PREDICTIONS</div>
-        <div style={{ fontSize: 13, color: "#888", letterSpacing: "0.1em", marginTop: 2 }}>2025–26 SEASON</div>
+        <div style={{ fontSize: 38, fontWeight: 900, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1a1a1a", fontFamily: "'Barlow Condensed',sans-serif" }}>WHL PLAYOFF PREDICTIONS</div>
+        <div style={{ fontSize: 18, color: "#888", letterSpacing: "0.1em", marginTop: 2, fontWeight: 700 }}>2025–26 SEASON</div>
       </div>
 
       {/* bracket */}
@@ -359,31 +364,43 @@ function FinalBracketView({ westSeeds, eastSeeds, bracketState }) {
           seeds={westSeeds} r1res={bracketState.western.r1 || []} r2res={bracketState.western.r2 || []} r3res={bracketState.western.r3 || []} mirrored={false} />
 
         {/* Center championship */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: 220, maxWidth: 260, padding: "0 24px", alignSelf: "center", margin: "0 32px" }}>
-          <div style={{ fontSize: 14, fontWeight: 800, letterSpacing: "0.13em", color: GOLD, textAlign: "center", marginBottom: 8, textTransform: "uppercase" }}>WHL Championship</div>
-          <div style={{ fontSize: 10, color: "#aaa", marginBottom: 18, textAlign: "center" }}>Ed Chynoweth Cup</div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: 320, maxWidth: 340, padding: "0 24px", alignSelf: "center", margin: "0 32px" }}>
+          <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: "0.13em", color: GOLD, textAlign: "center", marginBottom: 4, textTransform: "uppercase", fontFamily: "'Barlow Condensed',sans-serif" }}>WHL CHAMPIONSHIP</div>
+          <div style={{ fontSize: 14, color: "#888", marginBottom: 18, textAlign: "center", fontWeight: 700 }}>Ed Chynoweth Cup</div>
 
-          {[{ team: westChamp, lbl: "West" }, { team: eastChamp, lbl: "East" }].map(({ team, lbl }, idx) => {
-            const isWin = champ?.id === team?.id;
-            const isLose = champ && team && champ.id !== team.id;
-            return (
-              <div key={lbl} style={{ width: "100%" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", borderRadius: 9, border: isWin ? `2px solid ${GOLD}` : "1.5px solid #eee", background: isWin ? `${GOLD}22` : "#f7f7fa", opacity: isLose ? 0.3 : 1, marginBottom: idx === 0 ? 0 : 0, justifyContent: "center" }}>
-                  {team ? (<><Logo id={team.id} size={32} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 11, color: "#888", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>{lbl}</div><div style={{ fontSize: 15, fontWeight: 800, color: "#1a1a1a", textAlign: "center", whiteSpace: "normal" }}>{team.name}</div></div>{isWin && <span style={{ fontSize: 20 }}>🏆</span>}</>) : (<span style={{ fontSize: 12, color: "#ccc", fontStyle: "italic" }}>{lbl} TBD</span>)}
-                </div>
-                {idx === 0 && <div style={{ textAlign: "center", fontSize: 28, padding: "8px 0", color: GOLD }}>🏆</div>}
-              </div>
-            );
-          })}
+          <div style={{ border: `3px solid ${GOLD}`, borderRadius: 16, background: "#fffbe6", padding: 18, marginBottom: 18, minWidth: 260, maxWidth: 320, textAlign: "center", fontFamily: "'Barlow Condensed',sans-serif" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 8 }}>
+              <span style={{ fontSize: 15, color: GOLD, fontWeight: 900, letterSpacing: "0.09em", textTransform: "uppercase" }}>West</span>
+              {westChamp && <Logo id={westChamp.id} size={28} />}
+              <span style={{ fontSize: 20, fontWeight: 900, color: GOLD, marginLeft: 8 }}>🏆</span>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: "#222", textTransform: "uppercase", marginBottom: 4 }}>{westChamp ? westChamp.name : "TBD"}</div>
+            {champ && champ.id === westChamp?.id && champ.games && (
+              <div style={{ fontSize: 16, fontWeight: 700, color: GOLD, marginTop: 2 }}>{champ.games} Games</div>
+            )}
+          </div>
+
+          <div style={{ fontSize: 32, color: GOLD, margin: "-10px 0 0 0" }}>🏆</div>
+
+          <div style={{ border: `3px solid #eee`, borderRadius: 16, background: "#f7f7fa", padding: 18, marginBottom: 18, minWidth: 260, maxWidth: 320, textAlign: "center", fontFamily: "'Barlow Condensed',sans-serif", opacity: eastChamp ? 1 : 0.5 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 8 }}>
+              <span style={{ fontSize: 15, color: EAST_CLR, fontWeight: 900, letterSpacing: "0.09em", textTransform: "uppercase" }}>East</span>
+              {eastChamp && <Logo id={eastChamp.id} size={28} />}
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: "#222", textTransform: "uppercase", marginBottom: 4 }}>{eastChamp ? eastChamp.name : "TBD"}</div>
+            {champ && champ.id === eastChamp?.id && champ.games && (
+              <div style={{ fontSize: 16, fontWeight: 700, color: EAST_CLR, marginTop: 2 }}>{champ.games} Games</div>
+            )}
+          </div>
 
           {champ && (
-            <div style={{ marginTop: 22, textAlign: "center", padding: "18px 18px", borderRadius: 14, background: `${GOLD}14`, border: `2px solid ${GOLD}80`, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
-              <div style={{ fontSize: 12, color: GOLD, fontWeight: 900, letterSpacing: "0.13em", textTransform: "uppercase", textAlign: "center" }}>🏆 WHL Champion</div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 8, textAlign: "center" }}>
+            <div style={{ marginTop: 18, textAlign: "center", padding: "18px 18px", borderRadius: 18, background: `${GOLD}14`, border: `3px solid ${GOLD}`, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <div style={{ fontSize: 20, color: GOLD, fontWeight: 900, letterSpacing: "0.13em", textTransform: "uppercase", textAlign: "center" }}>🏆 WHL CHAMPION</div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginTop: 8, textAlign: "center" }}>
                 <Logo id={champ.id} size={44} />
                 <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: "#1a1a1a", textAlign: "center" }}>{champ.name}</div>
-                  {champGames && <div style={{ fontSize: 12, color: GOLD, textAlign: "center", fontWeight: 700 }}>in {champGames} Games</div>}
+                  <div style={{ fontSize: 28, fontWeight: 900, color: "#1a1a1a", textAlign: "center", textTransform: "uppercase" }}>{champ.name}</div>
+                  {champ.games && <div style={{ fontSize: 18, color: GOLD, textAlign: "center", fontWeight: 700, marginTop: 2 }}>{champ.games} Games</div>}
                 </div>
               </div>
             </div>
@@ -395,7 +412,7 @@ function FinalBracketView({ westSeeds, eastSeeds, bracketState }) {
           seeds={eastSeeds} r1res={bracketState.eastern.r1 || []} r2res={bracketState.eastern.r2 || []} r3res={bracketState.eastern.r3 || []} mirrored={true} />
       </div>
 
-      <div style={{ textAlign: "center", marginTop: 16, fontSize: 9, color: "#bbb", letterSpacing: "0.06em" }}>
+      <div style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: "#bbb", letterSpacing: "0.09em", fontWeight: 700 }}>
         WHL PLAYOFF PREDICTOR • whl.ca
       </div>
     </div>
