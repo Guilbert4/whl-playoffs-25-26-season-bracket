@@ -492,23 +492,23 @@ export default function App() {
   return (
     <div className="App">
       {page === "select" && (
-        <div className="bracket-container" style={{ padding: "0 32px", boxSizing: "border-box", width: "100%", maxWidth: 1200, margin: "0 auto" }}>
+        <div className="bracket-container" style={{ padding: "0 120px", boxSizing: "border-box", width: "100%", maxWidth: 1200, margin: "0 auto" }}>
           <div className="bracket-header" style={{ textAlign: "center", width: "100%" }}>
             <h1 style={{ textAlign: "center", fontSize: 36, fontWeight: 900, letterSpacing: "0.06em", marginBottom: 8 }}>WHL Playoff Bracket Predictor</h1>
             <p style={{ textAlign: "center", fontSize: 18, color: "#444", fontWeight: 600, marginTop: 0, marginBottom: 24 }}>Select 8 teams per conference and assign seeds to begin.</p>
           </div>
           <div style={{ display: "flex", gap: 48, justifyContent: "center", alignItems: "flex-start", marginBottom: 32, width: "100%" }}>
-            <div style={{ flex: 1, maxWidth: 420 }}>
+            <div style={{ flex: 1, maxWidth: 420, minWidth: 320, display: "flex", justifyContent: "flex-end" }}>
               <TeamSelector conference="western" selected={westSel} onToggle={toggle} onSeed={seed} />
             </div>
-            <div style={{ flex: 1, maxWidth: 420 }}>
+            <div style={{ flex: 1, maxWidth: 420, minWidth: 320, display: "flex", justifyContent: "flex-start" }}>
               <TeamSelector conference="eastern" selected={eastSel} onToggle={toggle} onSeed={seed} />
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
             <button
               disabled={!canProceed}
-              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: canProceed ? "#1a3a6e" : "#bbb", color: "#fff", border: "none", fontWeight: 700, cursor: canProceed ? "pointer" : "not-allowed", marginTop: 16 }}
+              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: canProceed ? "#1a3a6e" : "#bbb", color: "#fff", border: "none", fontWeight: 700, cursor: canProceed ? "pointer" : "not-allowed", marginTop: 16, marginLeft: "auto", marginRight: "auto", display: "block" }}
               onClick={() => setPage("bracket")}
             >
               Continue to Bracket
@@ -517,7 +517,7 @@ export default function App() {
         </div>
       )}
       {page === "bracket" && (
-        <div className="bracket-container" style={{ padding: "0 32px", boxSizing: "border-box", width: "100%", maxWidth: 1400, margin: "0 auto" }}>
+        <div className="bracket-container" style={{ padding: "0 120px", boxSizing: "border-box", width: "100%", maxWidth: 1400, margin: "0 auto" }}>
           <div className="bracket-header" style={{ textAlign: "center", width: "100%" }}>
             <h1 style={{ textAlign: "center", fontSize: 36, fontWeight: 900, letterSpacing: "0.06em", marginBottom: 8 }}>WHL Playoff Bracket Predictor</h1>
             <button style={{ margin: 12, fontSize: 14, display: "block", marginLeft: "auto", marginRight: "auto" }} onClick={() => setPage("select")}>Back to Team Selection</button>
@@ -544,7 +544,7 @@ export default function App() {
           </div>
           <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
             <button
-              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: "pointer", marginTop: 32 }}
+              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: "pointer", marginTop: 32, marginLeft: "auto", marginRight: "auto", display: "block" }}
               onClick={() => setPage("final")}
             >
               Export Final Bracket
@@ -563,7 +563,7 @@ export default function App() {
           </div>
           <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
             <button
-              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: exporting ? "#bbb" : "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: exporting ? "not-allowed" : "pointer", marginTop: 32 }}
+              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: exporting ? "#bbb" : "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: exporting ? "not-allowed" : "pointer", marginTop: 32, marginLeft: "auto", marginRight: "auto", display: "block" }}
               onClick={handleExport}
               disabled={exporting}
             >
