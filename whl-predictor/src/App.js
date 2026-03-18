@@ -157,8 +157,8 @@ function BracketSide({ seeds, conference, bracketState, onBracketChange }) {
   const set = (round, idx, result) => onBracketChange(conference, round, idx, result);
 
   const rounds = [
-    { key: "r1", label: "Round 1", matchups: r1m, results: bracketState.r1 || [] },
-    { key: "r2", label: "Round 2", matchups: r2m, results: bracketState.r2 || [] },
+    { key: "r1", label: "Rou d1d 1", matchups: r1m, results: bracketState.r1 || [] },
+    { key: "r2", label: "Rou d1d 2", matchups: r2m, results: bracketState.r2 || [] },
     { key: "r3", label: "Conf. Final", matchups: r3m, results: bracketState.r3 || [] },
   ];
   // West: [R1, R2, R3] — East: [R3, R2, R1] (mirrored toward center)
@@ -367,6 +367,15 @@ function FinalBracketView({ westSeeds, eastSeeds, bracketState }) {
 
 async function exportEl(ref) {
   if (!ref.current) return;
+  // Wait for all images inside the export area to load
+  const images = Array.from(ref.current.querySelectorAll('img'));
+  await Promise.all(images.map(img => {
+    if (img.complete && img.naturalWidth !== 0) return Promise.resolve();
+    return new Promise((resolve) => {
+      img.onload = img.onerror = () => resolve();
+    });
+  }));
+
   if (!window.html2canvas) {
     await new Promise((res, rej) => {
       const s = document.createElement("script");
@@ -417,103 +426,12 @@ export default function App() {
   const eastChamp = bracket.eastern.r3?.[0]?.winner || null;
   const westChamp = bracket.western.r3?.[0]?.winner || null;
 
+
   const handleExport = async () => {
     setExporting(true);
     try { await exportEl(finalRef); } catch { alert("Export failed. Please screenshot manually."); }
     setExporting(false);
   };
-
-  const NAV = [
-    { key: "select", label: "1. Select Teams", ok: true },
-    { key: "bracket", label: "2. Fill Bracket", ok: canProceed },
-    { key: "final", label: "3. Final Bracket", ok: canProceed },
-  ];
-
-  return (
-    <>
-      <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet" />
-
-      {/* nav */}
-      <div style={{ background: "#0d1226", padding: "11px 18px", display: "flex", alignItems: "center", gap: 12, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 14px rgba(0,0,0,0.45)" }}>
-        <div>
-          <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: 19, fontWeight: 700, color: "#fff", letterSpacing: "0.05em", textTransform: "uppercase", lineHeight: 1.1 }}>WHL Playoff Predictor</div>
-          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em" }}>2025–26 Season</div>
-        </div>
-        <div style={{ marginLeft: "auto", display: "flex", gap: 5 }}>
-          {NAV.map(({ key, label, ok }) => (
-            <button key={key} onClick={() => ok && setPage(key)} disabled={!ok}
-              style={{ padding: "5px 12px", borderRadius: 6, border: page === key ? `1px solid ${GOLD}60` : "1px solid rgba(255,255,255,0.18)", background: page === key ? `${GOLD}20` : "transparent", color: page === key ? GOLD : ok ? "#fff" : "rgba(255,255,255,0.28)", cursor: ok ? "pointer" : "not-allowed", fontSize: 12, fontWeight: page === key ? 700 : 400, fontFamily: "'Barlow Condensed',sans-serif", letterSpacing: "0.03em" }}>
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ── page 1 ── */}
-      {page === "select" && (
-        <div style={{ padding: "20px 16px", maxWidth: 920, margin: "0 auto" }}>
-          <h1 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "'Barlow Condensed',sans-serif", textTransform: "uppercase", letterSpacing: "0.03em" }}>Select Playoff Teams</h1>
-          <p style={{ margin: "0 0 18px", fontSize: 13, color: "var(--color-text-secondary)" }}>Pick 8 teams per conference and assign each a seed (1–8) to generate the bracket.</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
-            <TeamSelector conference="western" selected={westSel} onToggle={toggle} onSeed={seed} />
-            <TeamSelector conference="eastern" selected={eastSel} onToggle={toggle} onSeed={seed} />
-          </div>
-          <div style={{ marginTop: 22, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-            {!canProceed && <p style={{ fontSize: 12, color: "var(--color-text-tertiary)", margin: 0 }}>{eastSel.length < 8 || westSel.length < 8 ? `Need ${Math.max(0, 8 - westSel.length)} more West · ${Math.max(0, 8 - eastSel.length)} more East` : "Assign all seeds to continue"}</p>}
-            <button onClick={() => canProceed && setPage("bracket")} disabled={!canProceed}
-              style={{ padding: "11px 28px", borderRadius: 8, border: "none", background: canProceed ? "#0d1226" : "var(--color-background-tertiary)", color: canProceed ? "#fff" : "var(--color-text-tertiary)", cursor: canProceed ? "pointer" : "not-allowed", fontSize: 14, fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-              Generate Bracket →
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── page 2 ── */}
-      {page === "bracket" && (
-        <div style={{ padding: "14px 12px", maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
-            <div>
-              <h1 style={{ margin: "0 0 2px", fontSize: 20, fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "'Barlow Condensed',sans-serif", textTransform: "uppercase", letterSpacing: "0.03em" }}>2025–26 WHL Playoffs</h1>
-              <p style={{ margin: 0, fontSize: 12, color: "var(--color-text-secondary)" }}>Click a team to pick the winner · select number of games played</p>
-            </div>
-            <button onClick={() => setPage("final")}
-              style={{ padding: "8px 18px", borderRadius: 8, border: `2px solid ${GOLD}`, background: GOLD, color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif", letterSpacing: "0.04em", textTransform: "uppercase" }}>
-              Generate Final Bracket →
-            </button>
-          </div>
-          {/* West | Championship | East */}
-          <div style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
-            <BracketSide seeds={westSel} conference="western" bracketState={bracket.western} onBracketChange={updateBracket} />
-            <CenterChampionship eastChamp={eastChamp} westChamp={westChamp} result={bracket.finals} onResult={(r) => setBracket((p) => ({ ...p, finals: r }))} />
-            <BracketSide seeds={eastSel} conference="eastern" bracketState={bracket.eastern} onBracketChange={updateBracket} />
-          </div>
-        </div>
-      )}
-
-      {/* ── page 3: final bracket ── */}
-      {page === "final" && (
-        <div style={{ padding: "16px", maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 10 }}>
-            <div>
-              <h1 style={{ margin: "0 0 2px", fontSize: 20, fontWeight: 700, color: "var(--color-text-primary)", fontFamily: "'Barlow Condensed',sans-serif", textTransform: "uppercase" }}>Final Bracket</h1>
-              <p style={{ margin: 0, fontSize: 12, color: "var(--color-text-secondary)" }}>Your completed predictions — export as a PNG to save or share</p>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => setPage("bracket")}
-                style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid var(--color-border-secondary)", background: "var(--color-background-secondary)", color: "var(--color-text-primary)", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "'Barlow Condensed',sans-serif" }}>
-                ← Edit Bracket
-              </button>
-              <button onClick={handleExport} disabled={exporting}
-                style={{ padding: "8px 18px", borderRadius: 8, border: `2px solid ${GOLD}`, background: exporting ? `${GOLD}20` : GOLD, color: exporting ? GOLD : "#fff", cursor: exporting ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif", letterSpacing: "0.04em", textTransform: "uppercase" }}>
-                {exporting ? "Exporting…" : "Export PNG"}
-              </button>
-            </div>
-          </div>
-          <div ref={finalRef}>
-            <FinalBracketView westSeeds={westSel} eastSeeds={eastSel} bracketState={bracket} />
-          </div>
-        </div>
-      )}
-    </>
-  );
 }
+
+
