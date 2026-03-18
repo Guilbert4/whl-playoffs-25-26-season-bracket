@@ -465,12 +465,88 @@ export default function App() {
   const eastChamp = bracket.eastern.r3?.[0]?.winner || null;
   const westChamp = bracket.western.r3?.[0]?.winner || null;
 
-
   const handleExport = async () => {
     setExporting(true);
     try { await exportEl(finalRef); } catch { alert("Export failed. Please screenshot manually."); }
     setExporting(false);
   };
+
+  // Restore full bracket UI
+  return (
+    <div className="App">
+      {page === "select" && (
+        <div className="bracket-container">
+          <div className="bracket-header">
+            <h1>WHL Playoff Bracket Predictor</h1>
+            <p>Select 8 teams per conference and assign seeds to begin.</p>
+          </div>
+          <div style={{ display: "flex", gap: 32, justifyContent: "center", marginBottom: 32 }}>
+            <TeamSelector conference="western" selected={westSel} onToggle={toggle} onSeed={seed} />
+            <TeamSelector conference="eastern" selected={eastSel} onToggle={toggle} onSeed={seed} />
+          </div>
+          <button
+            disabled={!canProceed}
+            style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: canProceed ? "#1a3a6e" : "#bbb", color: "#fff", border: "none", fontWeight: 700, cursor: canProceed ? "pointer" : "not-allowed", marginTop: 16 }}
+            onClick={() => setPage("bracket")}
+          >
+            Continue to Bracket
+          </button>
+        </div>
+      )}
+      {page === "bracket" && (
+        <div className="bracket-container">
+          <div className="bracket-header">
+            <h1>WHL Playoff Bracket Predictor</h1>
+            <button style={{ margin: 12, fontSize: 14 }} onClick={() => setPage("select")}>Back to Team Selection</button>
+          </div>
+          <div style={{ display: "flex", gap: 24, alignItems: "flex-start", justifyContent: "center" }}>
+            <BracketSide
+              seeds={westSel}
+              conference="western"
+              bracketState={bracket.western}
+              onBracketChange={updateBracket}
+            />
+            <CenterChampionship
+              eastChamp={eastChamp}
+              westChamp={westChamp}
+              result={bracket.finals}
+              onResult={(r) => setBracket((prev) => ({ ...prev, finals: r }))}
+            />
+            <BracketSide
+              seeds={eastSel}
+              conference="eastern"
+              bracketState={bracket.eastern}
+              onBracketChange={updateBracket}
+            />
+          </div>
+          <button
+            style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: "pointer", marginTop: 32 }}
+            onClick={() => setPage("final")}
+          >
+            Export Final Bracket
+          </button>
+        </div>
+      )}
+      {page === "final" && (
+        <div className="bracket-container" style={{ background: "#0d1226", minHeight: "100vh", padding: 0 }}>
+          <div className="bracket-header" style={{ color: "#fff", paddingTop: 32 }}>
+            <h1>Export Bracket</h1>
+            <button style={{ margin: 12, fontSize: 14 }} onClick={() => setPage("bracket")}>Back to Bracket</button>
+          </div>
+          <div ref={finalRef} style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 600, padding: 24 }}>
+            <FinalBracketView westSeeds={westSel} eastSeeds={eastSel} bracketState={bracket} />
+          </div>
+          <button
+            style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: exporting ? "#bbb" : "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: exporting ? "not-allowed" : "pointer", marginTop: 32 }}
+            onClick={handleExport}
+            disabled={exporting}
+          >
+            {exporting ? "Exporting..." : "Download PNG"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 
