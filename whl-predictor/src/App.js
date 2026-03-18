@@ -492,31 +492,37 @@ export default function App() {
   return (
     <div className="App">
       {page === "select" && (
-        <div className="bracket-container">
-          <div className="bracket-header">
-            <h1>WHL Playoff Bracket Predictor</h1>
-            <p>Select 8 teams per conference and assign seeds to begin.</p>
+        <div className="bracket-container" style={{ padding: "0 32px", boxSizing: "border-box", width: "100%", maxWidth: 1200, margin: "0 auto" }}>
+          <div className="bracket-header" style={{ textAlign: "center", width: "100%" }}>
+            <h1 style={{ textAlign: "center", fontSize: 36, fontWeight: 900, letterSpacing: "0.06em", marginBottom: 8 }}>WHL Playoff Bracket Predictor</h1>
+            <p style={{ textAlign: "center", fontSize: 18, color: "#444", fontWeight: 600, marginTop: 0, marginBottom: 24 }}>Select 8 teams per conference and assign seeds to begin.</p>
           </div>
-          <div style={{ display: "flex", gap: 32, justifyContent: "center", marginBottom: 32 }}>
-            <TeamSelector conference="western" selected={westSel} onToggle={toggle} onSeed={seed} />
-            <TeamSelector conference="eastern" selected={eastSel} onToggle={toggle} onSeed={seed} />
+          <div style={{ display: "flex", gap: 48, justifyContent: "center", alignItems: "flex-start", marginBottom: 32, width: "100%" }}>
+            <div style={{ flex: 1, maxWidth: 420 }}>
+              <TeamSelector conference="western" selected={westSel} onToggle={toggle} onSeed={seed} />
+            </div>
+            <div style={{ flex: 1, maxWidth: 420 }}>
+              <TeamSelector conference="eastern" selected={eastSel} onToggle={toggle} onSeed={seed} />
+            </div>
           </div>
-          <button
-            disabled={!canProceed}
-            style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: canProceed ? "#1a3a6e" : "#bbb", color: "#fff", border: "none", fontWeight: 700, cursor: canProceed ? "pointer" : "not-allowed", marginTop: 16 }}
-            onClick={() => setPage("bracket")}
-          >
-            Continue to Bracket
-          </button>
+          <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+            <button
+              disabled={!canProceed}
+              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: canProceed ? "#1a3a6e" : "#bbb", color: "#fff", border: "none", fontWeight: 700, cursor: canProceed ? "pointer" : "not-allowed", marginTop: 16 }}
+              onClick={() => setPage("bracket")}
+            >
+              Continue to Bracket
+            </button>
+          </div>
         </div>
       )}
       {page === "bracket" && (
-        <div className="bracket-container">
-          <div className="bracket-header">
-            <h1>WHL Playoff Bracket Predictor</h1>
-            <button style={{ margin: 12, fontSize: 14 }} onClick={() => setPage("select")}>Back to Team Selection</button>
+        <div className="bracket-container" style={{ padding: "0 32px", boxSizing: "border-box", width: "100%", maxWidth: 1400, margin: "0 auto" }}>
+          <div className="bracket-header" style={{ textAlign: "center", width: "100%" }}>
+            <h1 style={{ textAlign: "center", fontSize: 36, fontWeight: 900, letterSpacing: "0.06em", marginBottom: 8 }}>WHL Playoff Bracket Predictor</h1>
+            <button style={{ margin: 12, fontSize: 14, display: "block", marginLeft: "auto", marginRight: "auto" }} onClick={() => setPage("select")}>Back to Team Selection</button>
           </div>
-          <div style={{ display: "flex", gap: 24, alignItems: "flex-start", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: 32, alignItems: "flex-start", justifyContent: "center", width: "100%" }}>
             <BracketSide
               seeds={westSel}
               conference="western"
@@ -536,30 +542,34 @@ export default function App() {
               onBracketChange={updateBracket}
             />
           </div>
-          <button
-            style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: "pointer", marginTop: 32 }}
-            onClick={() => setPage("final")}
-          >
-            Export Final Bracket
-          </button>
+          <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+            <button
+              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: "pointer", marginTop: 32 }}
+              onClick={() => setPage("final")}
+            >
+              Export Final Bracket
+            </button>
+          </div>
         </div>
       )}
       {page === "final" && (
-        <div className="bracket-container" style={{ background: "#0d1226", minHeight: "100vh", padding: 0 }}>
-          <div className="bracket-header" style={{ color: "#fff", paddingTop: 32 }}>
-            <h1>Export Bracket</h1>
-            <button style={{ margin: 12, fontSize: 14 }} onClick={() => setPage("bracket")}>Back to Bracket</button>
+        <div className="bracket-container" style={{ background: "#0d1226", minHeight: "100vh", padding: 0, width: "100vw", overflowX: "auto" }}>
+          <div className="bracket-header" style={{ color: "#fff", paddingTop: 32, textAlign: "center", width: "100%" }}>
+            <h1 style={{ textAlign: "center" }}>Export Bracket</h1>
+            <button style={{ margin: 12, fontSize: 14, display: "block", marginLeft: "auto", marginRight: "auto" }} onClick={() => setPage("bracket")}>Back to Bracket</button>
           </div>
-          <div ref={finalRef} style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 600, padding: 24 }}>
+          <div ref={finalRef} style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 600, padding: 24, width: "100%", overflowX: "auto" }}>
             <FinalBracketView westSeeds={westSel} eastSeeds={eastSel} bracketState={bracket} />
           </div>
-          <button
-            style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: exporting ? "#bbb" : "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: exporting ? "not-allowed" : "pointer", marginTop: 32 }}
-            onClick={handleExport}
-            disabled={exporting}
-          >
-            {exporting ? "Exporting..." : "Download PNG"}
-          </button>
+          <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+            <button
+              style={{ fontSize: 16, padding: "10px 32px", borderRadius: 8, background: exporting ? "#bbb" : "#c99600", color: "#222", border: "none", fontWeight: 700, cursor: exporting ? "not-allowed" : "pointer", marginTop: 32 }}
+              onClick={handleExport}
+              disabled={exporting}
+            >
+              {exporting ? "Exporting..." : "Download PNG"}
+            </button>
+          </div>
         </div>
       )}
     </div>
