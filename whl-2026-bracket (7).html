@@ -60,6 +60,10 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Barlow', s
 .btn.go:hover { background: #a8780e; }
 .btn.red { color: #c44; border-color: #f0c0c0; }
 .btn.red:hover { background: #fff5f5; border-color: #c44; }
+.btn.lnk { background: var(--E); color: #fff; border-color: var(--E); }
+.btn.lnk:hover { background: #163d85; }
+.btn.lnk:disabled { background: #c8cdd5; border-color: #c8cdd5; color: #fff; cursor: not-allowed; opacity: .6; }
+.btn.lnk:disabled:hover { background: #c8cdd5; }
 
 /* progress */
 .prog { display: flex; align-items: center; gap: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--dim); }
@@ -101,12 +105,12 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Barlow', s
 /* 7-col grid */
 .b-hdr-row {
   display: grid;
-  grid-template-columns: 155px 155px 155px 190px 155px 155px 155px;
+  grid-template-columns: 170px 170px 170px 190px 170px 170px 170px;
   gap: 0 8px; margin-bottom: 6px;
 }
 .b-grid {
   display: grid;
-  grid-template-columns: 155px 155px 155px 190px 155px 155px 155px;
+  grid-template-columns: 170px 170px 170px 190px 170px 170px 170px;
   gap: 0 8px;
   align-items: start;
 }
@@ -147,7 +151,7 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Barlow', s
 .tr.ww .sd, .tr.we .sd, .tr.wf .sd { color: rgba(255,255,255,.6); }
 .tr.los .sd { color: var(--faint); }
 
-.tr .nm { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.tr .nm { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
 .tr.ww .nm, .tr.we .nm, .tr.wf .nm { color: #fff; font-weight: 800; }
 .tr.los .nm { color: var(--faint); font-weight: 400; }
 
@@ -216,31 +220,10 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Barlow', s
   <div class="hdr-right" id="hdr-right"></div>
 </div>
 
-<!-- PAGE 1: TEAM SETUP -->
-<div class="page on" id="page1">
-  <div class="p1-body">
-    <div class="p1-intro">
-      <h1>Set Up Your Bracket</h1>
-      <p>Enter the 8 playoff teams per conference. Seeds determine all matchups and WHL reseeding in Round 2.</p>
-    </div>
-    <div class="conf-grid">
-      <div class="conf-panel">
-        <div class="conf-panel-hdr w">Western Conference</div>
-        <div id="west-seeds"></div>
-      </div>
-      <div class="conf-panel">
-        <div class="conf-panel-hdr e">Eastern Conference</div>
-        <div id="east-seeds"></div>
-      </div>
-    </div>
-    <div class="p1-footer">
-      <button class="btn dk" style="padding:10px 36px;font-size:14px" onclick="startBracket()">Start Bracket →</button>
-    </div>
-  </div>
-</div>
+
 
 <!-- PAGE 2: LIVE BRACKET -->
-<div class="page" id="page2">
+<div class="page on" id="page2">
   <div class="bracket-wrap">
     <div class="bracket-inner">
       <div class="b-hdr-row" id="b-hdr-row"></div>
@@ -256,8 +239,8 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Barlow', s
 // DEFAULTS
 // ════════════════════════════════════════════════
 const DEF = {
-  west: ['Everett Silvertips','Prince George Cougars','Kelowna Rockets','Victoria Royals','Kamloops Blazers','Spokane Chiefs','Portland Winterhawks','Seattle Thunderbirds'],
-  east: ['Moose Jaw Warriors','Prince Albert Raiders','Saskatoon Blades','Brandon Wheat Kings','Swift Current Broncos','Lethbridge Hurricanes','Medicine Hat Tigers','Calgary Hitmen']
+  west: ['Everett Silvertips','Penticton Vees','Prince George Cougars','Kelowna Rockets','Kamloops Blazers','Spokane Chiefs','Seattle Thunderbirds','Portland Winterhawks'],
+  east: ['Prince Albert Raiders','Medicine Hat Tigers','Edmonton Oil Kings','Calgary Hitmen','Brandon Wheat Kings','Saskatoon Blades','Regina Pats','Red Deer Rebels']
 };
 
 let teams = { west:[], east:[] };
@@ -279,8 +262,8 @@ function init() {
   teams.east = DEF.east.map((n,i) => ({ seed:i+1, name:n, abbr:toAbbr(n) }));
   picks = mkPicks();
   tryLoad();
-  buildSetupUI();
-  setHdr(1);
+  setHdr(2);
+  goPage(2);
 }
 
 function toAbbr(name) {
@@ -294,13 +277,13 @@ function shortName(name) {
 function tryLoad() {
   try {
     const h = location.hash.slice(1);
-    if (h) { const d = JSON.parse(atob(h)); if(d.teams) teams=d.teams; if(d.picks) picks=d.picks; return; }
+    if (h) { const d = JSON.parse(decodeURIComponent(escape(atob(h)))); if(d.teams) teams=d.teams; if(d.picks) picks=d.picks; return; }
     const s = localStorage.getItem('whl26b');
     if (s) { const d = JSON.parse(s); if(d.teams) teams=d.teams; if(d.picks) picks=d.picks; }
   } catch(e){}
 }
 function save() {
-  try { localStorage.setItem('whl26b', JSON.stringify({teams,picks})); } catch(e){}
+  // picks are not persisted — bracket always starts fresh on load
 }
 
 // ════════════════════════════════════════════════
@@ -308,17 +291,11 @@ function save() {
 // ════════════════════════════════════════════════
 function setHdr(page) {
   const el = document.getElementById('hdr-right');
-  if (page === 1) {
-    el.innerHTML = `<button class="btn dk" onclick="startBracket()">Start Bracket →</button>`;
-  } else {
-    el.innerHTML = `
-      <div class="prog"><span id="prog-txt">0/15</span><div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div></div>
-      <button class="btn" onclick="goPage(1)">← Teams</button>
-      <button class="btn go" onclick="exportPNG()">⬇ PNG</button>
-      <button class="btn" onclick="window.print()">🖨 Print</button>
-      <button class="btn" onclick="shareURL()">🔗 Share</button>
-      <button class="btn red" onclick="doReset()">↺ Reset</button>`;
-  }
+  el.innerHTML = `
+    <div class="prog"><span id="prog-txt">0/15</span><div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div></div>
+    <button class="btn lnk" id="link-btn" onclick="shareURL()" disabled title="Fill out the entire bracket to generate a link">🔗 Generate Link</button>
+    <button class="btn go" onclick="exportPNG()">⬇ PNG</button>
+    <button class="btn red" onclick="doReset()">↺ Reset</button>`;
 }
 
 function goPage(n) {
@@ -418,33 +395,7 @@ function finWin() {
 // RENDER
 // ════════════════════════════════════════════════
 function renderBracket() {
-  // SH = actual rendered series card height:
-  //   row A: 27px + divider: 1px + row B: 27px + footer: 22px = 77px
-  const SH = 77;
-  // G1 = gap inserted between consecutive R1 cards (spacer div height)
-  const G1 = 14;
-
-  // R2 series i centers between R1[2i] and R1[2i+1].
-  // Midpoint of R1[0] = SH/2
-  // Midpoint of R1[1] = SH + G1 + SH/2
-  // Target center for R2[0] = average = SH + G1/2
-  // Top spacer before R2[0] = target_center - SH/2 = SH/2 + G1/2
-  const R2T = Math.round(SH/2 + G1/2);
-
-  // Gap between R2[0] and R2[1]:
-  // Midpoint of R1[2] = 2*(SH+G1) + SH/2
-  // Midpoint of R1[3] = 3*(SH+G1) + SH/2
-  // Target center R2[1] = 2.5*(SH+G1) + SH/2
-  // Bottom of R2[0] = R2T + SH
-  // Between spacer = target_center_R2[1] - SH/2 - (R2T + SH) = SH + 2*G1
-  const R2B = SH + 2*G1;
-
-  // R3 centers between R2[0] and R2[1].
-  // Center of R2[0] = R2T + SH/2
-  // Center of R2[1] = R2T + SH + R2B + SH/2
-  // Target center R3 = (R2T + SH/2 + R2T + SH + R2B + SH/2) / 2 = R2T + SH/2 + (SH + R2B)/2
-  // Top spacer before R3 = target - SH/2 = R2T + (SH + R2B)/2
-  const R3T = Math.round(R2T + (SH + R2B) / 2);
+  const G1 = 14; // gap between R1 cards
 
   // header row
   const hRow = document.getElementById('b-hdr-row');
@@ -462,40 +413,34 @@ function renderBracket() {
   const r3w = r3Match('west');
   const r3e = r3Match('east');
   const fm  = finMatch();
-  const fw  = r3Win('west');
-  const fe  = r3Win('east');
   const fwin= finWin();
 
-  // West R1
-  grid.appendChild(buildCol([
-    {s:0,   m:r1Match('west',0), p:picks.west.r1[0], conf:'west', round:'r1', idx:0},
-    {s:G1,  m:r1Match('west',1), p:picks.west.r1[1], conf:'west', round:'r1', idx:1},
-    {s:G1,  m:r1Match('west',2), p:picks.west.r1[2], conf:'west', round:'r1', idx:2},
-    {s:G1,  m:r1Match('west',3), p:picks.west.r1[3], conf:'west', round:'r1', idx:3},
-  ]));
+  // West R1 — cards get data-id for measuring
+  const colW1 = buildCol([
+    {s:0,  m:r1Match('west',0), p:picks.west.r1[0], conf:'west', round:'r1', idx:0, id:'w-r1-0'},
+    {s:G1, m:r1Match('west',1), p:picks.west.r1[1], conf:'west', round:'r1', idx:1, id:'w-r1-1'},
+    {s:G1, m:r1Match('west',2), p:picks.west.r1[2], conf:'west', round:'r1', idx:2, id:'w-r1-2'},
+    {s:G1, m:r1Match('west',3), p:picks.west.r1[3], conf:'west', round:'r1', idx:3, id:'w-r1-3'},
+  ]);
+  grid.appendChild(colW1);
 
-  // West R2
-  grid.appendChild(buildCol(r2w ? [
-    {s:R2T, m:r2w[0], p:picks.west.r2[0], conf:'west', round:'r2', idx:0},
-    {s:R2B, m:r2w[1], p:picks.west.r2[1], conf:'west', round:'r2', idx:1},
-  ] : [{s:R2T, tbd:true}]));
+  // West R2 — spacers get data-spacer ids for post-render adjustment
+  const colW2 = buildCol(r2w ? [
+    {s:0, m:r2w[0], p:picks.west.r2[0], conf:'west', round:'r2', idx:0, id:'w-r2-0', spacerId:'sp-w-r2-0'},
+    {s:0, m:r2w[1], p:picks.west.r2[1], conf:'west', round:'r2', idx:1, id:'w-r2-1', spacerId:'sp-w-r2-1'},
+  ] : [{s:0, tbd:true, spacerId:'sp-w-r2-0'}]);
+  grid.appendChild(colW2);
 
   // West CF
-  grid.appendChild(buildCol(r3w ? [
-    {s:R3T, m:r3w, p:picks.west.r3[0], conf:'west', round:'r3', idx:0},
-  ] : [{s:R3T, tbd:true}]));
+  const colW3 = buildCol(r3w ? [
+    {s:0, m:r3w, p:picks.west.r3[0], conf:'west', round:'r3', idx:0, id:'w-r3-0', spacerId:'sp-w-r3-0'},
+  ] : [{s:0, tbd:true, spacerId:'sp-w-r3-0'}]);
+  grid.appendChild(colW3);
 
   // ── CENTER ──
-  // The bracket vertical midpoint = midpoint of the full R1 block
-  const R1_MID = (4*SH + 3*G1) / 2;
-  // We'll set a placeholder spacer height of 0 now, then measure + correct after render
-  const CHAMP_TOP = 0;
-
   const cc = mkEl('div','champ-col');
+  const ccSpacer = mkEl('div',''); ccSpacer.id='champ-spacer'; ccSpacer.style.cssText='height:0px;flex-shrink:0'; cc.appendChild(ccSpacer);
 
-  const ccSpacer = mkEl('div',''); ccSpacer.id='champ-spacer'; ccSpacer.style.cssText=`height:0px;flex-shrink:0`; cc.appendChild(ccSpacer);
-
-  // Championship card
   const csc = mkEl('div','sc'+(fm&&picks.final[0]&&picks.final[0].winner&&picks.final[0].games?' df':'')); csc.id='champ-card';
   csc.style.width='100%';
   const cTop = mkEl('div','champ-top'); cTop.textContent='🏒 WHL Championship'; csc.appendChild(cTop);
@@ -503,58 +448,98 @@ function renderBracket() {
     csc.appendChild(makeTR(fm[0], picks.final[0], 'final', 'final', 0, 'west'));
     csc.appendChild(mkEl('div','sc-div'));
     csc.appendChild(makeTR(fm[1], picks.final[0], 'final', 'final', 0, 'east'));
-    csc.appendChild(makeGR('final','final',0,picks.final[0]));
+    const fgr = makeGR('final','final',0,picks.final[0]);
+    if (fgr) csc.appendChild(fgr);
   } else {
     const ph = mkEl('div','champ-placeholder'); ph.textContent='Complete both Conf. Finals to unlock'; csc.appendChild(ph);
   }
   cc.appendChild(csc);
 
-  // Champ result below the card
   const cr = mkEl('div','champ-result'+(fwin?' show':''));
   cr.innerHTML = `<div class="cr-top"><div class="cr-trophy">🏆</div></div><div class="cr-name">${fwin?fwin.name:''}</div><div class="cr-sub">Ed Chynoweth Cup</div>`;
   cc.appendChild(cr);
-
   grid.appendChild(cc);
 
   // East CF
-  grid.appendChild(buildCol(r3e ? [
-    {s:R3T, m:r3e, p:picks.east.r3[0], conf:'east', round:'r3', idx:0},
-  ] : [{s:R3T, tbd:true}]));
+  const colE3 = buildCol(r3e ? [
+    {s:0, m:r3e, p:picks.east.r3[0], conf:'east', round:'r3', idx:0, id:'e-r3-0', spacerId:'sp-e-r3-0'},
+  ] : [{s:0, tbd:true, spacerId:'sp-e-r3-0'}]);
+  grid.appendChild(colE3);
 
   // East R2
-  grid.appendChild(buildCol(r2e ? [
-    {s:R2T, m:r2e[0], p:picks.east.r2[0], conf:'east', round:'r2', idx:0},
-    {s:R2B, m:r2e[1], p:picks.east.r2[1], conf:'east', round:'r2', idx:1},
-  ] : [{s:R2T, tbd:true}]));
+  const colE2 = buildCol(r2e ? [
+    {s:0, m:r2e[0], p:picks.east.r2[0], conf:'east', round:'r2', idx:0, id:'e-r2-0', spacerId:'sp-e-r2-0'},
+    {s:0, m:r2e[1], p:picks.east.r2[1], conf:'east', round:'r2', idx:1, id:'e-r2-1', spacerId:'sp-e-r2-1'},
+  ] : [{s:0, tbd:true, spacerId:'sp-e-r2-0'}]);
+  grid.appendChild(colE2);
 
   // East R1
-  grid.appendChild(buildCol([
-    {s:0,  m:r1Match('east',0), p:picks.east.r1[0], conf:'east', round:'r1', idx:0},
-    {s:G1, m:r1Match('east',1), p:picks.east.r1[1], conf:'east', round:'r1', idx:1},
-    {s:G1, m:r1Match('east',2), p:picks.east.r1[2], conf:'east', round:'r1', idx:2},
-    {s:G1, m:r1Match('east',3), p:picks.east.r1[3], conf:'east', round:'r1', idx:3},
-  ]));
+  const colE1 = buildCol([
+    {s:0,  m:r1Match('east',0), p:picks.east.r1[0], conf:'east', round:'r1', idx:0, id:'e-r1-0'},
+    {s:G1, m:r1Match('east',1), p:picks.east.r1[1], conf:'east', round:'r1', idx:1, id:'e-r1-1'},
+    {s:G1, m:r1Match('east',2), p:picks.east.r1[2], conf:'east', round:'r1', idx:2, id:'e-r1-2'},
+    {s:G1, m:r1Match('east',3), p:picks.east.r1[3], conf:'east', round:'r1', idx:3, id:'e-r1-3'},
+  ]);
+  grid.appendChild(colE1);
 
   updateProgress();
 
-  // After render: measure actual champ card height and set spacer so it's perfectly centered
+  // Multi-pass layout
+  function midOf(id) {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return (r.top + r.bottom) / 2 - grid.getBoundingClientRect().top;
+  }
+  function setSpacerH(spacerId, h) {
+    const sp = document.getElementById(spacerId);
+    if (sp) sp.style.height = Math.max(0, Math.round(h)) + 'px';
+  }
+  function centerCard(spacerId, cardId, midA, midB) {
+    const card = document.getElementById(cardId);
+    if (!card || midA === null || midB === null) return;
+    setSpacerH(spacerId, (midA + midB) / 2 - card.offsetHeight / 2);
+  }
+  function centerCardAfterPrev(spacerId, cardId, prevCardId, midA, midB) {
+    const card = document.getElementById(cardId);
+    const prev = document.getElementById(prevCardId);
+    if (!card || !prev || midA === null || midB === null) return;
+    const prevBottom = prev.getBoundingClientRect().bottom - grid.getBoundingClientRect().top;
+    setSpacerH(spacerId, (midA + midB) / 2 - card.offsetHeight / 2 - prevBottom);
+  }
+
   requestAnimationFrame(() => {
-    const card = document.getElementById('champ-card');
-    const spacer = document.getElementById('champ-spacer');
-    if (card && spacer) {
-      const cardH = card.offsetHeight;
-      const top = Math.round(R1_MID - cardH / 2);
-      spacer.style.height = Math.max(0, top) + 'px';
-    }
+    centerCard('sp-w-r2-0', 'w-r2-0', midOf('w-r1-0'), midOf('w-r1-1'));
+    centerCard('sp-e-r2-0', 'e-r2-0', midOf('e-r1-0'), midOf('e-r1-1'));
+
+    requestAnimationFrame(() => {
+      centerCardAfterPrev('sp-w-r2-1', 'w-r2-1', 'w-r2-0', midOf('w-r1-2'), midOf('w-r1-3'));
+      centerCardAfterPrev('sp-e-r2-1', 'e-r2-1', 'e-r2-0', midOf('e-r1-2'), midOf('e-r1-3'));
+
+      requestAnimationFrame(() => {
+        centerCard('sp-w-r3-0', 'w-r3-0', midOf('w-r2-0'), midOf('w-r2-1'));
+        centerCard('sp-e-r3-0', 'e-r3-0', midOf('e-r2-0'), midOf('e-r2-1'));
+
+        requestAnimationFrame(() => {
+          const champCard = document.getElementById('champ-card');
+          if (champCard) {
+            const mW = midOf('w-r3-0'), mE = midOf('e-r3-0');
+            if (mW !== null && mE !== null)
+              setSpacerH('champ-spacer', (mW + mE) / 2 - champCard.offsetHeight / 2);
+          }
+        });
+      });
+    });
   });
 }
 
 function buildCol(items) {
   const col = mkEl('div',''); col.style.cssText='display:flex;flex-direction:column;';
   items.forEach(item => {
-    if (item.s > 0) {
-      const sp = mkEl('div',''); sp.style.cssText=`height:${item.s}px;flex-shrink:0`; col.appendChild(sp);
-    }
+    const sp = mkEl('div',''); sp.style.cssText=`height:${item.s||0}px;flex-shrink:0`;
+    if (item.spacerId) sp.id = item.spacerId;
+    col.appendChild(sp);
+
     if (item.tbd) {
       const ph = mkEl('div',''); ph.style.cssText='font-size:11px;color:var(--faint);font-style:italic;padding:8px 4px;text-align:center;';
       ph.textContent='TBD'; col.appendChild(ph); return;
@@ -566,10 +551,12 @@ function buildCol(items) {
     const doneCls = done ? (round==='final'?'df': conf==='west'?'dw':'de') : '';
 
     const card = mkEl('div',`sc ${doneCls}`);
+    if (item.id) card.id = item.id;
     card.appendChild(makeTR(tA, p, conf, round, idx, conf));
     card.appendChild(mkEl('div','sc-div'));
     card.appendChild(makeTR(tB, p, conf, round, idx, conf));
-    card.appendChild(makeGR(conf, round, idx, p));
+    const gr = makeGR(conf, round, idx, p);
+    if (gr) card.appendChild(gr);
     col.appendChild(card);
   });
   return col;
@@ -585,7 +572,7 @@ function makeTR(team, p, conf, round, idx, colorSide) {
   btn.type='button';
 
   const sd=mkEl('span','sd'); sd.textContent=team.seed||''; btn.appendChild(sd);
-  const nm=mkEl('span','nm'); nm.textContent=shortName(team.name); btn.appendChild(nm);
+  const nm=mkEl('span','nm'); nm.textContent=team.name; btn.appendChild(nm);
   const gb=mkEl('span','gbadge');
   if (isWin && p.games) gb.textContent=`in ${p.games}`;
   btn.appendChild(gb);
@@ -595,29 +582,18 @@ function makeTR(team, p, conf, round, idx, colorSide) {
 }
 
 function makeGR(conf, round, idx, p) {
+  if (p && p.winner && p.games) return null;
+
   const ft=mkEl('div','sc-ft');
-  if (p && p.winner && p.games) {
-    // Complete — show plain text
-    ft.style.justifyContent = 'center';
-    ft.style.cursor = 'pointer';
-    ft.title = 'Click to change';
-    const txt = mkEl('span','glab');
-    txt.style.cssText = 'font-size:10px;letter-spacing:.5px;color:var(--dim);';
-    txt.textContent = `${p.games} games`;
-    ft.appendChild(txt);
-    ft.addEventListener('click', e => { e.stopPropagation(); doGames(conf, round, idx, p.games); });
-  } else {
-    // Still picking — show buttons
-    const lb=mkEl('span','glab'); lb.textContent='Games'; ft.appendChild(lb);
-    const gp=mkEl('div','gpick');
-    [4,5,6,7].forEach(g=>{
-      const b=mkEl('button',`gb${p&&p.games===g?' on':''}`);
-      b.type='button'; b.textContent=g;
-      b.addEventListener('click',e=>{ e.stopPropagation(); doGames(conf,round,idx,g); });
-      gp.appendChild(b);
-    });
-    ft.appendChild(gp);
-  }
+  const lb=mkEl('span','glab'); lb.textContent='Games'; ft.appendChild(lb);
+  const gp=mkEl('div','gpick');
+  [4,5,6,7].forEach(g=>{
+    const b=mkEl('button',`gb${p&&p.games===g?' on':''}`);
+    b.type='button'; b.textContent=g;
+    b.addEventListener('click',e=>{ e.stopPropagation(); doGames(conf,round,idx,g); });
+    gp.appendChild(b);
+  });
+  ft.appendChild(gp);
   return ft;
 }
 
@@ -657,6 +633,12 @@ function updateProgress() {
   const pt=document.getElementById('prog-txt'), pf=document.getElementById('prog-fill');
   if(pt) pt.textContent=`${done}/15`;
   if(pf) pf.style.width=`${(done/15)*100}%`;
+  const lb=document.getElementById('link-btn');
+  if(lb) {
+    const complete = done===15;
+    lb.disabled = !complete;
+    lb.title = complete ? 'Copy shareable link' : `Fill out the entire bracket to generate a link (${done}/15 complete)`;
+  }
 }
 
 // ════════════════════════════════════════════════
@@ -673,11 +655,12 @@ function exportPNG() {
       toast('Saved!');
     }).catch(()=>{ hdr.style.display=''; toast('Use Print instead'); });
 }
+
 function shareURL() {
   try {
-    const enc=btoa(JSON.stringify({teams,picks}));
+    const enc=btoa(unescape(encodeURIComponent(JSON.stringify({teams,picks}))));
     const url=location.href.split('#')[0]+'#'+enc;
-    navigator.clipboard.writeText(url).then(()=>toast('Link copied!')).catch(()=>prompt('Copy:',url));
+    navigator.clipboard.writeText(url).then(()=>toast('Link copied!')).catch(()=>prompt('Copy this link:',url));
   } catch(e){ toast('Could not generate link'); }
 }
 
@@ -697,8 +680,6 @@ function toast(msg) {
 // BOOT
 // ════════════════════════════════════════════════
 init();
-// If saved picks exist, jump straight to bracket
-if (picks.west.r1.some(p=>p&&p.winner)) { buildSetupUI(); goPage(2); }
 </script>
 </body>
 </html>
